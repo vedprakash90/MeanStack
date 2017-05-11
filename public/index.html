@@ -9,7 +9,7 @@
 	<script type="text/javascript" src="angular-cookies.js"></script>
 	
 	<script type="text/javascript">
-		var app = angular.module('mittens',[]);
+		var app = angular.module('mittens',['ngRoute']);
 
 app.config(function($routeProvider, $locationProvider) {
 	$routeProvider
@@ -23,7 +23,39 @@ app.config(function($routeProvider, $locationProvider) {
 });   
   });
 
-		app.controller('HomeController', function($scope,$http){	
+		app.controller('HomeController', function($scope,$http){
+
+		function getMeows(){
+		$http.get('/meows').then(function(responce){
+				$scope.meows=responce.data;
+			});	
+				getMeows();
+}
+	
+
+		});
+
+		app.controller('HomeController', function($rootScope,$scope,$http,$cookies){
+
+		app.post('/meows', function(req, res, next){	
+		var newMeow = new Meow({
+			text: req.body.newMeow		
+		});
+		newMeow.save(function(err){
+			return res.send("Added Successfully");
+	});	
+	});
+
+
+		});
+
+		app.controller('HomeController', function($scope,$http){
+
+		$scope.removeMeow=function(meow){
+$http.put('/meows/remove',{ meow: meow}).then(function(){
+	getMeows();
+});
+}; 
 
 		});
 
@@ -31,6 +63,8 @@ app.controller('SignupController', function($scope,$http){
 	
 	console.log('You are on the Signup Page');
 });
+
+
 	</script>
 </head>
 <body>
