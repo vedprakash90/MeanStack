@@ -9,7 +9,7 @@
 	<script type="text/javascript" src="angular-cookies.js"></script>
 	
 	<script type="text/javascript">
-		var app = angular.module('mittens',['ngRoute']);
+		var app = angular.module('mittens',['ngRoute','ngCookies']);
 
 app.config(function($routeProvider, $locationProvider) {
 	$routeProvider
@@ -24,18 +24,24 @@ app.config(function($routeProvider, $locationProvider) {
   });
 
 		app.controller('HomeController', function($scope,$http){
+			console.log("inside controller");
 
 		function getMeows(){
+			console.log("inside get method");
 		$http.get('/meows').then(function(responce){
 				$scope.meows=responce.data;
+				console.log("get data in angular"+meows);
 			});	
-				getMeows();
-}
-	
+			
+				
+};
+
+console.log("calling get method");
+   getMeows();
 
 		});
 
-		app.controller('HomeController', function($rootScope,$scope,$http,$cookies){
+ function($rootScope,$scope,$http,$cookies){
 
 		app.post('/meows', function(req, res, next){	
 		var newMeow = new Meow({
@@ -44,20 +50,17 @@ app.config(function($routeProvider, $locationProvider) {
 		newMeow.save(function(err){
 			return res.send("Added Successfully");
 	});	
-	});
-
-
-		});
-
-		app.controller('HomeController', function($scope,$http){
-
-		$scope.removeMeow=function(meow){
+});
+ };
+	 function($scope,$http){
+			    $scope.removeMeow=function(meow){
 $http.put('/meows/remove',{ meow: meow}).then(function(){
 	getMeows();
-});
+})
+console.log("get data in angular"+meows);;
 }; 
 
-		});
+		};
 
 app.controller('SignupController', function($scope,$http){
 	
@@ -69,6 +72,7 @@ app.controller('SignupController', function($scope,$http){
 </head>
 <body>
 <h1 class="page-title"><a href="#!/"> Mittens </a></h1>
+
 <div ng-view></div>
 </body>
 </html>
